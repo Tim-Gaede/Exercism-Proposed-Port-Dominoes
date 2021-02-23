@@ -1,4 +1,4 @@
-function can_chain(dominoes::Array{Tuple{Int,Int},1})
+function can_chain(dominoes)
     # Brute force method tests up to n! × 2ⁿ combinations
     if length(dominoes) == 0;    return [];    end
 
@@ -37,7 +37,7 @@ end
 
 
 #-------------------------------------------------------------------------------
-function solution_valid(dominoes::Array{Tuple{Int,Int},1})
+function solution_valid(dominoes)
     # First and last number in the entire chain must be equal
     if first(dominoes)[1] != last(dominoes)[2];    return false;    end
 
@@ -54,7 +54,7 @@ end
 
 
 #-------------------------------------------------------------------------------
-function flip!(dominoes::Array{Tuple{Int,Int},1}, index)
+function flip!(dominoes, index)
     domino_flipped = (dominoes[index][2], dominoes[index][1])
 
     dominoes[index] = domino_flipped
@@ -64,7 +64,7 @@ end
 
 
 #-------------------------------------------------------------------------------
-function permuNext!(a::Array{Any,1})
+function permuNext!(a)
  # Returns a value of true if the permutation is lexicographically last.
     len = length(a)
     iₗ = 1
