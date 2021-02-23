@@ -6,6 +6,60 @@ include("dominoes.jl")
 # Tests adapted from `problem-specifications//canonical-data.json` @ v2.1.0
 
 
+# Utility functions:
+#-------------------------------------------------------------------------------
+function flip!(dominoes::Array{Tuple{Int,Int},1}, index)
+    domino_flipped = (dominoes[index][2], dominoes[index][1])
+
+    dominoes[index] = domino_flipped
+end
+#-------------------------------------------------------------------------------
+
+
+#-------------------------------------------------------------------------------
+function solution_valid(input::Array{Tuple{Int,Int},1}, soln::Array{Any,1})
+
+    # First and last number in the entire chain must be equal
+    if first(soln)[1] != last(soln)[2];    return false;    end
+
+
+    # There can be no "broken link"
+    for i = 1 : length(soln) - 1
+        if soln[i][2] != soln[i+1][1];    return false;   end
+    end
+
+
+    # The input and output must be the same dominoes
+    if length(input) != length(soln);    return false;    end
+
+
+    input_test = input
+    for i = 1 : length(input_test)
+        if input_test[i][1] > input_test[i][2];    flip!(input_test, i);  end
+    end
+    sort!(input_test)
+
+    soln_test = soln
+    for i = 1 : length(soln_test)
+        if soln_test[i][1] > soln_test[i][2];    flip!(soln_test, i);  end
+    end
+    sort!(soln_test)
+
+
+    for i = 1 : length(input)
+        if input_test[i][1] != soln_test[i][1];    return false;    end
+        if input_test[i][2] != soln_test[i][2];    return false;    end
+    end
+
+
+
+
+    true
+end
+#-------------------------------------------------------------------------------
+
+
+
 println("\n"^2, "-"^60, "\n"^3)
 
 @testset "Empty input empty output." begin
@@ -110,56 +164,3 @@ println("A brute force method should still take under a minute.\n")
     @test solution_valid(input, solution) == true
 end
 println()
-
-
-# Utility functions:
-#-------------------------------------------------------------------------------
-function flip!(dominoes::Array{Tuple{Int,Int},1}, index)
-    domino_flipped = (dominoes[index][2], dominoes[index][1])
-
-    dominoes[index] = domino_flipped
-end
-#-------------------------------------------------------------------------------
-
-
-#-------------------------------------------------------------------------------
-function solution_valid(input::Array{Tuple{Int,Int},1}, soln::Array{Any,1})
-
-    # First and last number in the entire chain must be equal
-    if first(soln)[1] != last(soln)[2];    return false;    end
-
-
-    # There can be no "broken link"
-    for i = 1 : length(soln) - 1
-        if soln[i][2] != soln[i+1][1];    return false;   end
-    end
-
-
-    # The input and output must be the same dominoes
-    if length(input) != length(soln);    return false;    end
-
-
-    input_test = input
-    for i = 1 : length(input_test)
-        if input_test[i][1] > input_test[i][2];    flip!(input_test, i);  end
-    end
-    sort!(input_test)
-
-    soln_test = soln
-    for i = 1 : length(soln_test)
-        if soln_test[i][1] > soln_test[i][2];    flip!(soln_test, i);  end
-    end
-    sort!(soln_test)
-
-
-    for i = 1 : length(input)
-        if input_test[i][1] != soln_test[i][1];    return false;    end
-        if input_test[i][2] != soln_test[i][2];    return false;    end
-    end
-
-
-
-
-    true
-end
-#-------------------------------------------------------------------------------
